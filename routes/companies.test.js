@@ -117,7 +117,7 @@ describe("GET /companies", function () {
     });
   });
 
-  test("works: filter", async function () {
+  test("works: filter - found one", async function () {
     const resp = await request(app).get("/companies?name=d&minEmployees=3&maxEmployees=8");
     expect(resp.body).toEqual({
       companies:
@@ -128,6 +128,36 @@ describe("GET /companies", function () {
             description: "Desc2",
             numEmployees: 5,
             logoUrl: "http://d2.img",
+          },
+        ],
+    });
+  });
+
+  test("works: filter - found three", async function () {
+    const resp = await request(app).get("/companies?name=c");
+    expect(resp.body).toEqual({
+      companies:
+        [
+          {
+            handle: "c1",
+            name: "C1",
+            description: "Desc1",
+            numEmployees: 1,
+            logoUrl: "http://c1.img",
+          },
+          {
+            handle: "c2",
+            name: "C2",
+            description: "Desc2",
+            numEmployees: 2,
+            logoUrl: "http://c2.img",
+          },
+          {
+            handle: "c3",
+            name: "C3",
+            description: "Desc3",
+            numEmployees: 3,
+            logoUrl: "http://c3.img",
           },
         ],
     });
