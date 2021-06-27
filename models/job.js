@@ -19,7 +19,7 @@ class Job {
       `INSERT INTO jobs
           (title, salary, equity, company_handle)
           VALUES ($1, $2, $3, $4)
-          RETURNING title, salary, equity, company_handle AS companyHandle`,
+          RETURNING id, title, salary, equity, company_handle AS "companyHandle"`,
       [title, salary, equity, companyHandle],
     );
     const job = result.rows[0];
@@ -31,5 +31,14 @@ class Job {
    * Returns [{title, salary, equity, companyHandle}, ...]
   */
 
-
+  static async findAll() {
+    const jobsRes = await db.query(
+      `SELECT id, title, salary, equity, company_handle AS "companyHandle"
+          FROM jobs
+          ORDER BY title`,
+    );
+    return jobsRes.rows;
+  }
 }
+
+module.exports = Job;
