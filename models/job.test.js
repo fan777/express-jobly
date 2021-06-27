@@ -19,6 +19,27 @@ afterAll(commonAfterAll);
 
 describe('create', () => {
   const newJob = {
-
+    title: "J1",
+    salary: 100,
+    equity: 0,
+    companyHandle: "c1",
   }
+  test('works', async () => {
+    let job = await Job.create(newJob);
+    expect(job).toEqual(newJob);
+
+    const result = db.query(
+      `SELECT title, salary, equity, company_handle
+          FROM jobs
+          WHERE title = 'J1'`);
+    expect(results.row).toEqual([
+      {
+        title: "J1",
+        salary: 100,
+        equity: 0,
+        company_handle: "c1",
+      }
+    ]);
+  });
+
 });
