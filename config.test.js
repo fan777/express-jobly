@@ -1,7 +1,7 @@
 "use strict";
 
 describe("config can come from env", function () {
-  test("works", function() {
+  test("works", function () {
     process.env.SECRET_KEY = "abc";
     process.env.PORT = "5000";
     process.env.DATABASE_URL = "other";
