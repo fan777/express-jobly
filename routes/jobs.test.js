@@ -124,24 +124,31 @@ describe('GET / jobs', () => {
   })
 
   test('works: filter - found', async () => {
-    const resp = await request(app).get('/jobs?title=j&hasEquity=false');
+    const resp = await request(app).get('/jobs?title=j&hasEquity=true');
     expect(resp.body).toEqual({
       jobs:
         [
           {
             id: expect.any(Number),
-            title: "J2",
-            salary: 150,
-            equity: "0",
+            title: "J1",
+            salary: 100,
+            equity: "0.1",
             companyHandle: "c1",
           },
-          {
-            id: expect.any(Number),
-            title: "J3",
-            salary: 200,
-            equity: null,
-            companyHandle: "c2",
-          }
+          // {
+          //   id: expect.any(Number),
+          //   title: "J2",
+          //   salary: 150,
+          //   equity: "0",
+          //   companyHandle: "c1",
+          // },
+          // {
+          //   id: expect.any(Number),
+          //   title: "J3",
+          //   salary: 200,
+          //   equity: null,
+          //   companyHandle: "c2",
+          // }
         ]
     })
   })

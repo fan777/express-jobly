@@ -28,6 +28,11 @@ class Job {
 
   /** Find all jobs 
    * 
+   * filters (optional) - { title, minSalary, hasEquity }
+   *   title: filter by job name, all jobs containing case-insensitive string
+   *   minSalary: filter by minimum salary
+   *   hasEquity: filter by non-zero equity
+   * 
    * Returns [{title, salary, equity, companyHandle}, ...]
   */
 

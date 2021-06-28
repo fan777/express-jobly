@@ -98,7 +98,8 @@ function sqlForJobFilter(filters, jsToSql) {
     }
     if (filterName === 'hasEquity') {
       let equity = `${jsToSql[filterName] || filterName}`;
-      return values[idx] ? `"${equity}" IS NOT NULL AND "${equity}" > 0` : `"${equity}" IS NULL OR "${equity}" = 0`;
+      //return values[idx] ? `"${equity}" IS NOT NULL AND "${equity}" > 0` : `"${equity}" IS NULL OR "${equity}" = 0`;
+      return values[idx] ? `"${equity}" IS NOT NULL AND "${equity}" > 0` : "";
     }
   });
 
