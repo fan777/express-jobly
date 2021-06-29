@@ -241,11 +241,11 @@ describe("remove", function () {
 
 describe('applyJob', () => {
   test('works', async () => {
-    let application = await User.applyJob("u1", 1);
+    let jobId = await User.applyJob("u2", 1);
     const res = await db.query(
       `SELECT username, job_id AS "jobId" FROM applications where job_id = $1`,
-      [application.jobId]);
-    expect("u1").toEqual(res.rows[0].username);
+      [jobId]);
+    expect("u2").toEqual(res.rows[0].username);
   });
 
   test('works - user with multiple applications', async () => {
