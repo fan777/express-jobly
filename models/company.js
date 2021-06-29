@@ -83,19 +83,32 @@ class Company {
   static async get(handle) {
     const companyRes = await db.query(
       `SELECT handle,
-                  name,
-                  description,
-                  num_employees AS "numEmployees",
-                  logo_url AS "logoUrl"
-           FROM companies
-           WHERE handle = $1`,
+                  c.name,
+                  c.description,
+                  c.num_employees AS "numEmployees",
+                  c.logo_url AS "logoUrl",
+                  j.id,
+                  j.title,
+                  j.salary,
+                  j.equity
+           FROM companies c
+           JOIN jobs j
+           ON c.handle = j.company_handle
+           WHERE c.handle = $1`,
       [handle]);
 
-    const company = companyRes.rows[0];
+    if (!companyRes.rows[0]) throw new NotFoundError(`No company: ${handle}`);
 
-    if (!company) throw new NotFoundError(`No company: ${handle}`);
+    // next two lines uses object destructuring + IIFE (immediately invoked function expressions)
+    // - create company object with desired keys from first row
+    const company = (({ handle, name, description, numEmployees, logoUrl }) => ({ handle, name, description, numEmployees, logoUrl }))(companyRes.rows[0]);
+    // - create array of jobs with desired keys from every row
+    const companyJobs = companyRes.rows.map(row => (({ id, title, salary, equity }) => ({ id, title, salary, equity }))(row));
 
-    return company;
+    return {
+      ...company,
+      jobs: companyJobs,
+    };
   }
 
   /** Update company data with `data`.

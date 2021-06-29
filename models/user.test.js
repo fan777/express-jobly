@@ -44,7 +44,7 @@ describe("authenticate", function () {
 
   test("unauth if wrong password", async function () {
     try {
-      await User.authenticate("c1", "wrong");
+      await User.authenticate("u1", "wrong");
       fail();
     } catch (err) {
       expect(err instanceof UnauthorizedError).toBeTruthy();
@@ -134,12 +134,20 @@ describe("findAll", function () {
 describe("get", function () {
   test("works", async function () {
     let user = await User.get("u1");
+    // expect(user).toEqual({
+    //   username: "u1",
+    //   firstName: "U1F",
+    //   lastName: "U1L",
+    //   email: "u1@email.com",
+    //   isAdmin: false,
+    // });
     expect(user).toEqual({
       username: "u1",
       firstName: "U1F",
       lastName: "U1L",
       email: "u1@email.com",
       isAdmin: false,
+      jobs: [2]
     });
   });
 
@@ -201,7 +209,7 @@ describe("update", function () {
   test("bad request if no data", async function () {
     expect.assertions(1);
     try {
-      await User.update("c1", {});
+      await User.update("u1", {});
       fail();
     } catch (err) {
       expect(err instanceof BadRequestError).toBeTruthy();
@@ -215,7 +223,7 @@ describe("remove", function () {
   test("works", async function () {
     await User.remove("u1");
     const res = await db.query(
-        "SELECT * FROM users WHERE username='u1'");
+      "SELECT * FROM users WHERE username='u1'");
     expect(res.rows.length).toEqual(0);
   });
 
@@ -226,5 +234,25 @@ describe("remove", function () {
     } catch (err) {
       expect(err instanceof NotFoundError).toBeTruthy();
     }
+  });
+});
+
+/************************************** applyJob */
+
+describe('applyJob', () => {
+  test('works', async () => {
+    let application = await User.applyJob("u1", 1);
+    const res = await db.query(
+      `SELECT username, job_id AS "jobId" FROM applications where job_id = $1`,
+      [application.jobId]);
+    expect("u1").toEqual(res.rows[0].username);
+  });
+
+  test('works - user with multiple applications', async () => {
+    await User.applyJob("u2", 3);
+    const res = await db.query(
+      `SELECT username, job_id AS "jobId" FROM applications where username = $1`,
+      ["u2"]);
+    expect(res.rows.length).toEqual(2);
   });
 });

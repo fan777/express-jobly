@@ -11,6 +11,8 @@ async function commonBeforeAll() {
   // noinspection SqlWithoutWhere
   await db.query("DELETE from jobs");
   await db.query("ALTER SEQUENCE jobs_id_seq RESTART WITH 1")
+  // noinspection SqlWithoutWhere
+  await db.query("DELETE from applications");
 
   await db.query(`
     INSERT INTO companies(handle, name, num_employees, description, logo_url)
@@ -41,6 +43,11 @@ async function commonBeforeAll() {
            ('J2', 100, '0.040', 'c3'),
            ('J3', NULL, NULL, 'd1'),
            ('J4', 700, '0.042', 'd3')`);
+
+  await db.query(`
+  INSERT INTO applications(username, job_id)
+    VALUES ('u2', 2),
+           ('u1', 2)`);
 }
 
 async function commonBeforeEach() {

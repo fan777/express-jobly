@@ -215,6 +215,7 @@ describe("GET /users/:username", function () {
         lastName: "U1L",
         email: "user1@user.com",
         isAdmin: true,
+        jobs: [2]
       },
     });
   });
@@ -230,6 +231,7 @@ describe("GET /users/:username", function () {
         lastName: "U2L",
         email: "user2@user.com",
         isAdmin: false,
+        jobs: [2]
       },
     });
   });
@@ -391,3 +393,41 @@ describe("DELETE /users/:username", function () {
     expect(resp.statusCode).toEqual(404);
   });
 });
+
+/************************************** POST /users/:username/jobs/:id */
+
+describe('POST /users/:username/jobs/:id', () => {
+  test('works for admins', async () => {
+    const resp = await request(app)
+      .post(`/users/u1/jobs/1`)
+      .set("authorization", `Bearer ${u1Token}`);
+    expect(resp.body).toEqual({ applied: 1 });
+  });
+
+  test("works for same user (logged in = target)", async function () {
+    const resp = await request(app)
+      .post(`/users/u2/jobs/3`)
+      .set("authorization", `Bearer ${u2Token}`);
+    expect(resp.body).toEqual({ applied: 3 });
+  });
+
+  test("fails for non-admins, non-same user", async function () {
+    const resp = await request(app)
+      .post(`/users/u1/jobs/1`)
+      .set("authorization", `Bearer ${u3Token}`);
+    expect(resp.statusCode).toEqual(401);
+  });
+
+  test("unauth for anon", async function () {
+    const resp = await request(app)
+      .post(`/users/u1/jobs/1`);
+    expect(resp.statusCode).toEqual(401);
+  });
+
+  test("error if non-existent user", async function () {
+    const resp = await request(app)
+      .post(`/users/abc/jobs/1`)
+      .set("authorization", `Bearer ${u1Token}`);
+    expect(resp.statusCode).toEqual(500);
+  });
+})
